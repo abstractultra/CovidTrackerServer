@@ -17,7 +17,7 @@ let dataObject = [];
 let nationalData = {};
 let provincialData = {};
 
-const specificCountries = ["Canada", "US", "China"];
+const specificCountries = ["Canada", "US", "China", "Australia", "Denmark", "France", "Netherlands", "United Kingdom"];
 
 let presentDate = "";
 let pastDate = "";
@@ -135,9 +135,9 @@ function getAllProvincialData() {
     obj[regionName] = {
       country: dataObject[i]["Country/Region"],
       last_update : dataObject[i]["Last Update"],
-      confirmed : dataObject[i]["Confirmed"],
-      deaths : dataObject[i]["Deaths"],
-      recovered : dataObject[i]["Recovered"],
+      confirmed : +dataObject[i]["Confirmed"],
+      deaths : +dataObject[i]["Deaths"],
+      recovered : +dataObject[i]["Recovered"],
       latitude : dataObject[i]["Latitude"],
       longitude : dataObject[i]["Longitude"]
     };
@@ -150,18 +150,33 @@ function getAllNationalData() {
   let obj = {};
   for (let i = 0; i < dataObject.length; i++) {
     const regionName = dataObject[i]["Country/Region"];
-    if (specificCountries.includes(regionName)) continue;
+    if (specificCountries.includes(regionName)) {
+      obj[regionName] = {confirmed : 0, deaths : 0, recovered : 0};
+      continue;
+    }
     obj[regionName] = {
       last_update : dataObject[i]["Last Update"],
-      confirmed : dataObject[i]["Confirmed"],
-      deaths : dataObject[i]["Deaths"],
-      recovered : dataObject[i]["Recovered"],
+      confirmed : +dataObject[i]["Confirmed"],
+      deaths : +dataObject[i]["Deaths"],
+      recovered : +dataObject[i]["Recovered"],
       latitude : dataObject[i]["Latitude"],
       longitude : dataObject[i]["Longitude"]
     };
   }
   nationalData = obj;
+  getSpecialCountryData();
   console.log("Country data generated");
+}
+
+function getSpecialCountryData() {
+  for (let i = 0; i < dataObject.length; i++) {
+    const regionName = dataObject[i]["Country/Region"];
+    if (!specificCountries.includes(regionName)) continue;
+    const {Confirmed = 0, Deaths = 0, Recovered = 0} = dataObject[i];
+    nationalData[regionName].confirmed += +Confirmed;
+    nationalData[regionName].deaths += +Deaths;
+    nationalData[regionName].recovered += +Recovered;
+  }
 }
 
 function refreshAllData() {
