@@ -139,8 +139,8 @@ function getAllProvincialData() {
       confirmed : +dataObject[i]["Confirmed"],
       deaths : +dataObject[i]["Deaths"],
       recovered : +dataObject[i]["Recovered"],
-      latitude : parseFloat(dataObject[i]["Latitude"]),
-      longitude : parseFloat(dataObject[i]["Longitude"])
+      latitude : parseFloat(dataObject[i]["Lat"]),
+      longitude : parseFloat(dataObject[i]["Long_"])
     };
 
   }
@@ -160,8 +160,8 @@ function getAllNationalData() {
       confirmed : +dataObject[i]["Confirmed"],
       deaths : +dataObject[i]["Deaths"],
       recovered : +dataObject[i]["Recovered"],
-      latitude : parseFloat(dataObject[i]["Latitude"]),
-      longitude : parseFloat(dataObject[i]["Longitude"])
+      latitude : parseFloat(dataObject[i]["Lat"]),
+      longitude : parseFloat(dataObject[i]["Long_"])
     };
   }
   nationalData = obj;
