@@ -61,9 +61,10 @@ function retrieveOfficialData() {
     let outputData = JSON.parse(body);
     const $ = cheerio.load(outputData["body"]["und"][0]["safe_value"]);
     for (let i = 0; i < dataObject.length; i++) {
-      if (dataObject[i]["Province/State"] === "Ontario") {
+      if (dataObject[i]["Province_State"] === "Ontario") {
         dataObject[i]["Confirmed"] = $("tr:contains('Confirmed positive')").eq(0).children().eq(1).text();
         dataObject[i]["Recovered"] = $("tr:contains('Resolved')").eq(0).children().eq(1).text();
+        dataObject[i]["Deaths"] = $("tr:contains('Deceased')").eq(0).children().eq(1).text();
         console.log("Retrieved official data for ONTARIO");
         break;
       }
@@ -102,7 +103,7 @@ function parseData() {
 function getProvincialCases(province) {
   let obj = [];
   for (let i = 0; i < dataObject.length; i++) {
-    if (dataObject[i]["Province/State"].toLowerCase() === province) {
+    if (dataObject[i]["Province_State"].toLowerCase() === province) {
       let caseVar = dataObject[i]["Confirmed"];
       let deathsVar = dataObject[i]["Deaths"];
       let recoveriesVar = dataObject[i]["Recovered"];
@@ -116,7 +117,7 @@ function getProvincialCases(province) {
 function getNationalCases(country) {
   let obj = [];
   for (let i = 0; i < dataObject.length; i++) {
-    if (dataObject[i]["Country/Region"].toLowerCase() === country) {
+    if (dataObject[i]["Country_Region"].toLowerCase() === country) {
       let caseVar = dataObject[i]["Confirmed"];
       let deathsVar = dataObject[i]["Deaths"];
       let recoveriesVar = dataObject[i]["Recovered"];
@@ -130,10 +131,10 @@ function getNationalCases(country) {
 function getAllProvincialData() {
   let obj = {};
   for (let i = 0; i < dataObject.length; i++) {
-    const regionName = dataObject[i]["Province/State"];
+    const regionName = dataObject[i]["Province_State"];
     if (!regionName) continue;
     obj[regionName] = {
-      country: dataObject[i]["Country/Region"],
+      country: dataObject[i]["Country_Region"],
       last_update : dataObject[i]["Last Update"],
       confirmed : +dataObject[i]["Confirmed"],
       deaths : +dataObject[i]["Deaths"],
@@ -149,7 +150,7 @@ function getAllProvincialData() {
 function getAllNationalData() {
   let obj = {};
   for (let i = 0; i < dataObject.length; i++) {
-    const regionName = dataObject[i]["Country/Region"];
+    const regionName = dataObject[i]["Country_Region"];
     if (specificCountries.includes(regionName)) {
       obj[regionName] = {confirmed : 0, deaths : 0, recovered : 0};
       continue;
@@ -170,7 +171,7 @@ function getAllNationalData() {
 
 function getSpecialCountryData() {
   for (let i = 0; i < dataObject.length; i++) {
-    const regionName = dataObject[i]["Country/Region"];
+    const regionName = dataObject[i]["Country_Region"];
     if (!specificCountries.includes(regionName)) continue;
     const {Confirmed = 0, Deaths = 0, Recovered = 0} = dataObject[i];
     nationalData[regionName].confirmed += +Confirmed;
